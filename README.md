@@ -42,7 +42,7 @@ sudo mn --topo single,3 --controller remote
 
 ---
 
-##SDN Logic & Flow Rules
+## SDN Logic & Flow Rules
 
 ### ✔ Packet Handling
 Controller receives packet_in
@@ -98,7 +98,6 @@ Controller periodically prints:
 Packets: X   Bytes: Y
 
 ---
-📸 Screenshots
 
 ## 📸 Screenshots
 
@@ -159,6 +158,7 @@ Verified packets using Wireshark
 
 ---
 ## 📁 Project Structure
+
 sdn-traffic-monitor/
 │── traffic_monitor.py
 │── README.md
