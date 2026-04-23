@@ -42,45 +42,62 @@ sudo mn --topo single,3 --controller remote
 
 ---
 
+##SDN Logic & Flow Rules
 
-SDN Logic & Flow Rules
-✔ Packet Handling
+### ✔ Packet Handling
 Controller receives packet_in
 Learns MAC → port mapping
 Decides output port
-✔ Match Fields
+
+### ✔ Match Fields
 Destination MAC address (eth_dst)
 Input port (in_port)
-✔ Action
+
+### ✔  Action
 Forward packet to correct port
 Flood if unknown
-✔ Flow Installation
+
+### ✔ Flow Installation
 Flow rules installed dynamically
 Priority = 1 for learned flows
 Table-miss rule sends packets to controller
-🔄 Working Scenarios
-✅ Scenario 1: Normal (All Allowed)
+
+---
+
+## 🔄 Working Scenarios
+
+### ✅ Scenario 1: Normal (All Allowed)
 All hosts communicate
 Output:
 0% packet loss (6/6 received)
-❌ Scenario 2: Blocked (Firewall Behavior)
+
+### ❌ Scenario 2: Blocked (Firewall Behavior)
 Communication between selected hosts blocked
 Output:
 33% packet loss (4/6 received)
-📊 Performance Analysis
-🔹 Ping (Latency)
+
+---
+
+## 📊 Performance Analysis
+
+### 🔹 Ping (Latency)
 Measures connectivity and delay
 Result: 0% packet loss in normal case
-🔹 Iperf (Throughput)
+
+### 🔹 Iperf (Throughput)
 Measures bandwidth between hosts
 Example: ~60 Mbps
-🔹 Flow Table Observation
+
+### 🔹 Flow Table Observation
 dpctl dump-flows
 Shows installed flow rules
 Displays packet/byte count
-🔹 Traffic Monitoring
+
+### 🔹 Traffic Monitoring
 Controller periodically prints:
 Packets: X   Bytes: Y
+
+---
 📸 Screenshots
 
 ## 📸 Screenshots
@@ -113,12 +130,16 @@ Displays ARP request and reply for MAC address resolution.
 Shows ICMP Echo Request and Reply (ping packets).
 ![Wireshark ICMP](screenshots/wireshark_ICMP.png)
 
-🔍 Observations
+---
+## 🔍 Observations
 ARP packets resolve MAC addresses
 ICMP packets show ping communication
 Flow rules reduce controller load
 Packet count increases with traffic
-✅ Functional Features Implemented
+
+---
+
+## ✅ Functional Features Implemented
 
 ✔ Learning Switch (Forwarding)
 ✔ Traffic Monitoring
@@ -127,12 +148,17 @@ Packet count increases with traffic
 ✔ Packet Analysis using Wireshark
 ✔ Performance Testing using iperf
 
-🧪 Validation
+---
+
+## 🧪 Validation
+
 Verified connectivity using pingall
 Verified throughput using iperf
 Verified flow rules using dpctl dump-flows
 Verified packets using Wireshark
-📁 Project Structure
+
+---
+## 📁 Project Structure
 sdn-traffic-monitor/
 │── traffic_monitor.py
 │── README.md
@@ -142,7 +168,8 @@ sdn-traffic-monitor/
     ├── flowtable.png
     ├── wireshark_ARP.png
     ├── wireshark_ICMP.png
-📚 Tools Used
+
+## 📚 Tools Used
 Mininet
 Ryu Controller
 Wireshark
@@ -152,6 +179,6 @@ iperf
 Prabhakar Kumar
 GitHub: https://github.com/prabhakarkumar123
 
-🎯 Conclusion
+## 🎯 Conclusion
 
 This project successfully demonstrates SDN concepts including controller-based forwarding, flow rule installation, and real-time traffic monitoring. The system effectively shows both normal and restricted network behavior using OpenFlow rules.
