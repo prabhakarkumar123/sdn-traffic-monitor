@@ -1,142 +1,152 @@
-🟦 Project Title
+# SDN Traffic Monitoring and Statistics Collector
 
-Traffic Monitoring and Statistics Collector using SDN (Ryu + Mininet)
+## 📌 Problem Statement
+The objective of this project is to design and implement a Software Defined Networking (SDN) solution using Mininet and Ryu controller that collects and displays traffic statistics in real time.
 
-📌 Problem Statement
+The system demonstrates:
+- Controller–switch interaction
+- Flow rule design (match–action)
+- Network behavior observation
 
-The objective of this project is to design and implement a Software Defined Networking (SDN) controller that collects, monitors, and displays network traffic statistics. The system should demonstrate controller-based traffic management, dynamic flow rule installation, and real-time monitoring of packet and byte counts.
+---
 
-🎯 Objectives
-Demonstrate controller–switch interaction
-Implement flow rules using match–action logic
-Handle packet_in events in the controller
-Monitor traffic statistics periodically
-Analyze network behavior using tools
-Demonstrate access control (allowed vs blocked traffic)
-Validate performance using ping, iperf, and Wireshark
-🧠 Technologies Used
-Mininet – Network emulation
-Ryu Controller – SDN controller
-OpenFlow Protocol – Communication between switch and controller
-Wireshark – Packet analysis
-iperf – Throughput measurement
-🧩 Network Topology
-1 Switch (s1)
-3 Hosts (h1, h2, h3)
-Remote Ryu controller
+## 🎯 Objectives
+- Build an SDN controller using Ryu
+- Implement learning switch functionality
+- Collect flow statistics (packets & bytes)
+- Monitor traffic periodically
+- Demonstrate allowed vs blocked communication
+- Analyze network using tools like Wireshark and iperf
 
-👉 Simple topology chosen to clearly demonstrate:
+---
 
-Learning switch behavior
-Traffic monitoring
-Access control
-⚙️ Installation & Setup
-Step 1: Activate Ryu Environment
-source ryu-env/bin/activate
-Step 2: Run Controller
+## 🧱 Topology Used
+- 3 Hosts → h1, h2, h3  
+- 1 Switch → s1  
+- Remote Controller → Ryu  
+
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Start Ryu Controller
+```bash
 python3 -m ryu.cmd.manager traffic_monitor.py
 
-👉 This starts the SDN controller which:
-
-Handles packet_in events
-Installs flow rules
-Collects statistics
-Step 3: Start Mininet
+2. Start Mininet
 sudo mn -c
 sudo mn --topo single,3 --controller remote
 
-👉 Creates:
-
-3 hosts
-1 switch
-Connected to controller
-▶️ Execution Commands
-🔹 Connectivity Test (Latency)
-pingall
-
-✔ Expected:
-
-0% dropped (6/6 received)
-🔹 Flow Table Inspection
-dpctl dump-flows
-
-✔ Shows:
-
-Match fields
-Actions
-Flow rules
-🔹 Throughput Test (iperf)
-h1 iperf -s &
-h2 iperf -c h1
-
-✔ Expected:
-
-Bandwidth ≈ 60 Mbps
-🔹 Monitoring Output (Controller)
-
-Controller continuously prints:
-
-Packets: XXXX  Bytes: XXXX
-
-✔ Shows real-time traffic statistics
-
-🧪 Test Scenarios
-✅ Scenario 1: Normal Operation
-All hosts communicate
-pingall → 0% dropped
-❌ Scenario 2: Failure (Controller OFF)
-
-Stop controller:
-
-CTRL + C
-
-Then:
-
-pingall
-
-✔ Output:
-
-100% dropped
-🚫 Scenario 3: Allowed vs Blocked
-Traffic between h1 and h3 is blocked
-Others communicate normally
-
-✔ Output:
-
-33% dropped
-📊 Performance Analysis
-Metric	Tool	Observation
-Latency	ping	Low delay
-Throughput	iperf	~60 Mbps
-Flow rules	dpctl	Dynamic updates
-Statistics	Controller	Increasing packet count
-🔍 Wireshark Analysis
-ARP packets → Address resolution
-ICMP packets → Ping communication
-
-✔ Confirms network behavior
-
-🔄 Flow Rule Design
-Match Fields:
+SDN Logic & Flow Rules
+✔ Packet Handling
+Controller receives packet_in
+Learns MAC → port mapping
+Decides output port
+✔ Match Fields
+Destination MAC address (eth_dst)
 Input port (in_port)
-Destination MAC (dl_dst)
-Actions:
-Forward to output port
-Drop (for blocked traffic)
-Table-Miss Rule:
-Sends unknown packets to controller
-📈 Results
-Successful learning switch implementation
-Dynamic flow rule installation
-Real-time traffic monitoring
-Controlled traffic filtering
-Performance validated using iperf
-✅ Validation
-Connectivity tested using ping
-Performance tested using iperf
-Packet analysis using Wireshark
-Flow rules verified using dpctl
-📚 References
-Ryu Documentation
-Mininet Documentation
-OpenFlow Specification
+✔ Action
+Forward packet to correct port
+Flood if unknown
+✔ Flow Installation
+Flow rules installed dynamically
+Priority = 1 for learned flows
+Table-miss rule sends packets to controller
+🔄 Working Scenarios
+✅ Scenario 1: Normal (All Allowed)
+All hosts communicate
+Output:
+0% packet loss (6/6 received)
+❌ Scenario 2: Blocked (Firewall Behavior)
+Communication between selected hosts blocked
+Output:
+33% packet loss (4/6 received)
+📊 Performance Analysis
+🔹 Ping (Latency)
+Measures connectivity and delay
+Result: 0% packet loss in normal case
+🔹 Iperf (Throughput)
+Measures bandwidth between hosts
+Example: ~60 Mbps
+🔹 Flow Table Observation
+dpctl dump-flows
+Shows installed flow rules
+Displays packet/byte count
+🔹 Traffic Monitoring
+Controller periodically prints:
+Packets: X   Bytes: Y
+📸 Screenshots
+
+## 📸 Screenshots
+
+### 🔹 Ping Output (0% Packet Loss)
+Shows successful communication between all hosts.
+![Ping Output](screenshots/ping.png)
+
+---
+
+### 🔹 Iperf Throughput Test
+Displays bandwidth measurement between hosts.
+![Iperf Output](screenshots/iperf.png)
+
+---
+
+### 🔹 Flow Table Entries (OpenFlow Rules)
+Shows dynamically installed flow rules in the switch.
+![Flow Table](screenshots/flowtable.png)
+
+---
+
+### 🔹 Wireshark Capture – ARP Packets
+Displays ARP request and reply for MAC address resolution.
+![Wireshark ARP](screenshots/wireshark_ARP.png)
+
+---
+
+### 🔹 Wireshark Capture – ICMP Packets
+Shows ICMP Echo Request and Reply (ping packets).
+![Wireshark ICMP](screenshots/wireshark_ICMP.png)
+
+🔍 Observations
+ARP packets resolve MAC addresses
+ICMP packets show ping communication
+Flow rules reduce controller load
+Packet count increases with traffic
+✅ Functional Features Implemented
+
+✔ Learning Switch (Forwarding)
+✔ Traffic Monitoring
+✔ Flow Statistics Collection
+✔ Firewall Behavior (Blocking)
+✔ Packet Analysis using Wireshark
+✔ Performance Testing using iperf
+
+🧪 Validation
+Verified connectivity using pingall
+Verified throughput using iperf
+Verified flow rules using dpctl dump-flows
+Verified packets using Wireshark
+📁 Project Structure
+sdn-traffic-monitor/
+│── traffic_monitor.py
+│── README.md
+│── screenshots/
+    ├── ping.png
+    ├── iperf.png
+    ├── flowtable.png
+    ├── wireshark_ARP.png
+    ├── wireshark_ICMP.png
+📚 Tools Used
+Mininet
+Ryu Controller
+Wireshark
+iperf
+👨‍💻 Author
+
+Prabhakar Kumar
+GitHub: https://github.com/prabhakarkumar123
+
+🎯 Conclusion
+
+This project successfully demonstrates SDN concepts including controller-based forwarding, flow rule installation, and real-time traffic monitoring. The system effectively shows both normal and restricted network behavior using OpenFlow rules.
